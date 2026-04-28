@@ -5,18 +5,3 @@
 body {
   @apply bg-night text-dim-gray;
 }
-
-html.chroma-key-active,
-html.chroma-key-active body,
-html.chroma-key-active #__nuxt {
-  background-color: #00ff00 !important;
-}
-
-html.chroma-key-active,
-html.chroma-key-active body {
-  min-height: 100%;
-}
-
-html.chroma-key-active #__nuxt {
-  min-height: 100vh;
-}

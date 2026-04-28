@@ -13,11 +13,8 @@
           <div
             v-for="face in renderedFaces"
             :key="face.cls"
-            class="cube-face rounded-lg border-2 shadow-inner"
-            :class="[
-              face.cls,
-              chroma ? 'border-[#0a0a0a]' : 'border-black/50',
-            ]"
+            class="cube-face rounded-lg border-2 border-black/50 shadow-inner"
+            :class="face.cls"
             :style="{ backgroundColor: faceColor, filter: `brightness(${face.brightness})` }"
           >
             <div class="cube-face-inner flex h-full w-full items-center justify-center">
@@ -82,7 +79,6 @@ const props = withDefaults(
     faceColor: string;
     markColor: string;
     useEyes: boolean;
-    chroma: boolean;
     sizePx: number;
     rollDurationMs?: number;
     viewTiltXDeg?: number;

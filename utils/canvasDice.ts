@@ -86,7 +86,6 @@ export function drawDiceBoard(
   widthCss: number,
   heightCss: number,
   specs: DieDrawSpec[],
-  chromaGreen: boolean,
   options: DiceBoardDrawOptions = {}
 ): void {
   const dpr = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
@@ -100,11 +99,7 @@ export function drawDiceBoard(
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.scale(dpr, dpr);
 
-  if (chromaGreen) {
-    ctx.fillStyle = '#00ff00';
-  } else {
-    ctx.fillStyle = 'transparent';
-  }
+  ctx.fillStyle = 'transparent';
   ctx.fillRect(0, 0, widthCss, heightCss);
 
   const n = specs.length;
@@ -133,8 +128,8 @@ export function drawDiceBoard(
     ctx.fillStyle = `rgb(${r},${g},${b})`;
     roundRect(ctx, bx, by, size, size, radius);
     ctx.fill();
-    ctx.strokeStyle = chromaGreen ? 'rgba(10,10,10,0.85)' : 'rgba(0,0,0,0.4)';
-    ctx.lineWidth = chromaGreen ? 2 : 2;
+    ctx.strokeStyle = 'rgba(0,0,0,0.4)';
+    ctx.lineWidth = 2;
     ctx.stroke();
 
     const cx = bx + size / 2;

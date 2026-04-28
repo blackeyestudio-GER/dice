@@ -2,8 +2,7 @@
   <div
     class="min-h-screen text-white"
     :class="[
-      obsMode && chromaKeyUi ? 'bg-[#00FF00]' : 'bg-night',
-      obsMode ? 'flex flex-col items-center justify-center px-2 py-4' : 'px-4 py-6',
+      obsMode ? 'bg-transparent flex flex-col items-center justify-center px-0 py-2' : 'bg-night px-4 py-6',
     ]"
   >
     <div
@@ -87,10 +86,6 @@
               </div>
               <div class="mt-4 grid gap-2.5">
                 <label class="flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-white/10 bg-eerie-black/40 px-3 py-2.5">
-                  <span>Chroma-Key</span>
-                  <input v-model="chromaKeyUi" type="checkbox" class="rounded border-gray-500" />
-                </label>
-                <label class="flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-white/10 bg-eerie-black/40 px-3 py-2.5">
                   <span>Würfelton beim Wurf</span>
                   <input v-model="soundDiceEnabled" type="checkbox" class="rounded border-gray-500" />
                 </label>
@@ -151,7 +146,6 @@
                       :face-color="posePreviewFaceColor"
                       :mark-color="posePreviewMarkColor"
                       :use-eyes="posePreviewUseEyes"
-                      :chroma="false"
                       :size-px="110"
                       :roll-duration-ms="rollAnimationMs"
                       :view-tilt-x-deg="endTiltXDeg"
@@ -410,14 +404,10 @@
                 <p class="text-xs font-semibold uppercase tracking-[0.2em] text-dim-gray">Share</p>
                 <p class="mt-1 text-xs text-dim-gray">Erzeuge einen Link fuer OBS oder zum direkten Teilen.</p>
               </div>
-              <div class="grid gap-2.5 sm:grid-cols-3">
+              <div class="grid gap-2.5 sm:grid-cols-2">
                 <label class="flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-white/10 bg-eerie-black/40 px-3 py-2.5">
                   <span>OBS-Ansicht</span>
                   <input v-model="shareIncludeObs" type="checkbox" class="rounded border-gray-500" />
-                </label>
-                <label class="flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-white/10 bg-eerie-black/40 px-3 py-2.5">
-                  <span>Chroma-Gruen</span>
-                  <input v-model="shareIncludeChroma" type="checkbox" class="rounded border-gray-500" />
                 </label>
                 <label class="flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-white/10 bg-eerie-black/40 px-3 py-2.5">
                   <span>Auto-Wurf</span>
@@ -454,12 +444,7 @@
 
             <div
               ref="diceStageRef"
-              class="relative w-full overflow-hidden shadow-lg"
-              :class="
-                chromaKeyUi
-                  ? 'rounded-lg border-[3px] border-black/50 ring-1 ring-black/30'
-                  : 'rounded-lg border-[3px] border-moonstone/45 ring-1 ring-white/10'
-              "
+              class="relative w-full overflow-hidden rounded-lg border-[3px] border-moonstone/45 shadow-lg ring-1 ring-white/10"
               :style="diceStageOuterStyle"
             >
               <div class="dice-3d-stage w-full px-4 py-8 sm:px-7 sm:py-10">
@@ -472,7 +457,6 @@
                       :face-color="faceColorAt(i)"
                       :mark-color="markColorAt(i)"
                       :use-eyes="displayForDie(i) === 'eyes'"
-                      :chroma="chromaKeyUi"
                       :size-px="cubeSizePx"
                       :roll-duration-ms="rollAnimationMs"
                       :view-tilt-x-deg="endTiltXDeg"
@@ -509,18 +493,12 @@
 
       <div v-else class="flex w-full flex-col items-center">
         <div class="w-full max-w-[min(92vmin,880px)]">
-          <p class="mb-3 min-h-[1.75rem] w-full text-center text-xl font-bold tracking-wide">
-            <span v-if="isRolling" class="text-moonstone">…</span>
-            <span v-else class="tabular-nums text-white">{{ results.join(' · ') }}</span>
+          <p class="mb-3 min-h-[1.75rem] w-full text-center text-xl font-bold tracking-wide text-white">
+            <span v-if="showObsResult" class="tabular-nums">{{ results.join(' · ') }}</span>
           </p>
           <div
             ref="diceStageRef"
-            class="relative w-full overflow-hidden shadow-lg"
-            :class="
-              chromaKeyUi
-                ? 'rounded-lg border-[3px] border-black/50 ring-1 ring-black/30'
-                : 'rounded-lg border-[3px] border-moonstone/45 ring-1 ring-white/10'
-            "
+            class="relative w-full overflow-visible"
             :style="diceStageOuterStyle"
           >
             <div class="dice-3d-stage w-full px-4 py-8 sm:px-7 sm:py-10">
@@ -533,7 +511,6 @@
                     :face-color="faceColorAt(i)"
                     :mark-color="markColorAt(i)"
                     :use-eyes="displayForDie(i) === 'eyes'"
-                    :chroma="chromaKeyUi"
                     :size-px="cubeSizePx"
                     :roll-duration-ms="rollAnimationMs"
                     :view-tilt-x-deg="endTiltXDeg"
@@ -587,7 +564,6 @@ const obsMode = computed(() => {
   return o === '1' || o === 'true' || o === 'yes';
 });
 
-const chromaKeyUi = ref(false);
 const soundDiceEnabled = ref(true);
 const rollAnimationMs = ref(110);
 const soundTickMs = ref(70);
@@ -634,10 +610,8 @@ const diceStageRef = ref<HTMLElement | null>(null);
 const diceStageWidth = ref(640);
 let resizeObs: ResizeObserver | null = null;
 
-/** Cointoss-artige Stage: #1C1E1E bzw. Chroma-Grün */
 const diceStageOuterStyle = computed(() => {
-  const bg = chromaKeyUi.value ? '#00FF00' : '#1C1E1E';
-  return { backgroundColor: bg };
+  return { backgroundColor: obsMode.value ? 'transparent' : '#1C1E1E' };
 });
 
 const grid3dColumnsStyle = computed(() => {
@@ -868,16 +842,10 @@ watch(colorTabActive, (t) => {
   selectColorPresetCategory(colorPresetCategory.value);
 });
 
-/** Volldokument-Grün nur in OBS; normale Ansicht bleibt dunkel, Chroma nur auf der Würfel-Stage */
-useHead(() => ({
-  htmlAttrs: {
-    class: obsMode.value && chromaKeyUi.value ? 'chroma-key-active' : undefined,
-  },
-}));
-
 const results = ref<number[]>([1, 1]);
 const shuffleDisplay = ref<number[]>([1, 1]);
 const isRolling = ref(false);
+const hasCompletedRoll = ref(false);
 let shuffleIntervalId = 0;
 let audioCtx: AudioContext | null = null;
 let audioResumeBump: (() => void) | null = null;
@@ -919,9 +887,7 @@ function playDiceTick(soundSpeedMs = 70) {
   osc.stop(t + sustain + 0.008);
 }
 
-const shareOpen = ref(false);
 const shareIncludeObs = ref(false);
-const shareIncludeChroma = ref(false);
 const shareIncludeAutoroll = ref(false);
 const shareCopied = ref(false);
 let shareCopyResetId = 0;
@@ -1158,6 +1124,7 @@ function roll() {
   if (isRolling.value) return;
   void getAudioContext()?.resume();
   isRolling.value = true;
+  hasCompletedRoll.value = false;
   syncResultsLength();
   shuffleDisplay.value = results.value.map(() => randomRoll());
   playDiceTick(soundTickMs.value);
@@ -1176,8 +1143,11 @@ function roll() {
     results.value = results.value.map(() => randomRoll());
     shuffleDisplay.value = [...results.value];
     isRolling.value = false;
+    hasCompletedRoll.value = true;
   }, ROLL_MS);
 }
+
+const showObsResult = computed(() => obsMode.value && hasCompletedRoll.value && !isRolling.value);
 
 function buildToolQuery(): Record<string, string> {
   const q: Record<string, string> = {};
@@ -1204,7 +1174,6 @@ function buildToolQuery(): Record<string, string> {
     q.disp = 'e';
   }
 
-  q.chroma = chromaKeyUi.value ? '1' : '0';
   q.d3 = '1';
   if (rollAnimationMs.value !== 110) q.d3spd = String(rollAnimationMs.value);
   if (endTiltXDeg.value !== 0) q.d3tx = String(endTiltXDeg.value);
@@ -1261,7 +1230,6 @@ watch(
     singleMark,
     globalDisplay,
     customDice,
-    chromaKeyUi,
     rollAnimationMs,
     endTiltXDeg,
     endTiltYDeg,
@@ -1335,13 +1303,6 @@ function applyQueryFromRoute() {
     else if (disp === 'n' || disp === 'num') globalDisplay.value = 'number';
   }
 
-  const chroma = q.chroma;
-  if (chroma === '1' || chroma === 'true' || chroma === 'yes') {
-    chromaKeyUi.value = true;
-  } else {
-    chromaKeyUi.value = false;
-  }
-
   const d3spd = Number(q.d3spd ?? q.dice3dSpeed);
   if (!Number.isNaN(d3spd)) {
     rollAnimationMs.value = clampRollAnimationMs(d3spd);
@@ -1413,20 +1374,17 @@ function applyQueryFromRoute() {
   }
 }
 
-function buildShareUrl(includeObs: boolean, includeChroma: boolean, includeAutoroll: boolean): string {
+function buildShareUrl(includeObs: boolean, includeAutoroll: boolean): string {
   if (import.meta.server) return '';
   const tool = buildToolQuery();
   if (includeObs) tool.obs = '1';
-  if (includeChroma) tool.chroma = '1';
   if (includeAutoroll) tool.autoroll = '1';
   const qs = new URLSearchParams(tool).toString();
   const path = route.path || '/';
   return `${window.location.origin}${path}${qs ? `?${qs}` : ''}`;
 }
 
-const shareUrlDisplay = computed(() =>
-  buildShareUrl(shareIncludeObs.value, shareIncludeChroma.value, shareIncludeAutoroll.value)
-);
+const shareUrlDisplay = computed(() => buildShareUrl(shareIncludeObs.value, shareIncludeAutoroll.value));
 
 function onShareInputFocus(e: Event) {
   const t = e.target as HTMLInputElement | null;
@@ -1434,7 +1392,7 @@ function onShareInputFocus(e: Event) {
 }
 
 async function copyShareLink() {
-  const url = buildShareUrl(shareIncludeObs.value, shareIncludeChroma.value, shareIncludeAutoroll.value);
+  const url = buildShareUrl(shareIncludeObs.value, shareIncludeAutoroll.value);
   try {
     await navigator.clipboard?.writeText(url);
     shareCopied.value = true;
