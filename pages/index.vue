@@ -2,7 +2,9 @@
   <div
     class="min-h-screen text-white"
     :class="[
-      obsMode ? 'bg-transparent flex flex-col items-center justify-center px-0 py-2' : 'bg-night px-4 py-6',
+      obsMode
+        ? 'bg-transparent flex flex-col items-center justify-center px-0 py-2'
+        : 'bg-night bg-[radial-gradient(circle_at_top_left,_rgba(58,161,189,0.18),_transparent_32%),radial-gradient(circle_at_top_right,_rgba(145,70,255,0.12),_transparent_28%),linear-gradient(180deg,_#131515_0%,_#0d0f10_100%)] px-4 py-6 sm:px-5 lg:px-6',
     ]"
   >
     <div
@@ -11,47 +13,50 @@
     >
       <template v-if="!obsMode">
         <div class="flex min-w-0 flex-1 flex-col gap-4 lg:basis-[64%]">
-          <div class="rounded-2xl border border-white/10 bg-night/50 p-4 shadow-lg shadow-black/10">
+          <div class="overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.045] p-4 shadow-[0_24px_90px_rgba(0,0,0,0.34)] backdrop-blur xl:p-5">
             <div class="mb-4 flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <h1 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">Streamer Würfel</h1>
-                <p class="mt-1 text-sm text-dim-gray">Baue deinen Wurf links, prüfe ihn rechts in der Live-Vorschau.</p>
+              <div class="max-w-2xl">
+                <p class="text-[11px] font-semibold uppercase tracking-[0.28em] text-moonstone/90">Dice Share Builder</p>
+                <h1 class="mt-2 text-2xl font-black tracking-tight text-white sm:text-3xl">Streamer Würfel für Share-Links und OBS</h1>
+                <p class="mt-2 max-w-xl text-sm leading-6 text-dim-gray">
+                  Konfiguriere den Wurf, teile den normalen Link direkt und kopiere bei Bedarf einen separaten OBS-Link mit transparentem Hintergrund.
+                </p>
               </div>
-              <div class="rounded-full border border-white/10 bg-eerie-black px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-moonstone">
+              <div class="rounded-full border border-moonstone/25 bg-moonstone/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-moonstone shadow-[0_0_40px_rgba(58,161,189,0.12)]">
                 {{ diceCount }}W{{ sides }}
               </div>
             </div>
 
-            <div class="rounded-xl border border-white/10 bg-eerie-black/35 p-1">
-              <div class="grid grid-cols-4 gap-1">
+            <div class="rounded-2xl border border-white/10 bg-black/20 p-1.5">
+              <div class="grid grid-cols-4 gap-1.5">
                 <button
                   type="button"
-                  class="rounded-lg px-3 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] transition"
-                  :class="editorTab === 'base' ? 'bg-white text-night shadow' : 'text-dim-gray hover:text-white'"
+                  class="rounded-xl px-3 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] transition"
+                  :class="editorTab === 'base' ? 'bg-white text-night shadow' : 'text-dim-gray hover:bg-white/5 hover:text-white'"
                   @click="editorTab = 'base'"
                 >
                   Basis
                 </button>
                 <button
                   type="button"
-                  class="rounded-lg px-3 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] transition"
-                  :class="editorTab === 'style' ? 'bg-white text-night shadow' : 'text-dim-gray hover:text-white'"
+                  class="rounded-xl px-3 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] transition"
+                  :class="editorTab === 'style' ? 'bg-white text-night shadow' : 'text-dim-gray hover:bg-white/5 hover:text-white'"
                   @click="editorTab = 'style'"
                 >
                   Würfel
                 </button>
                 <button
                   type="button"
-                  class="rounded-lg px-3 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] transition"
-                  :class="editorTab === 'colors' ? 'bg-white text-night shadow' : 'text-dim-gray hover:text-white'"
+                  class="rounded-xl px-3 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] transition"
+                  :class="editorTab === 'colors' ? 'bg-white text-night shadow' : 'text-dim-gray hover:bg-white/5 hover:text-white'"
                   @click="editorTab = 'colors'"
                 >
                   Farben
                 </button>
                 <button
                   type="button"
-                  class="rounded-lg px-3 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] transition"
-                  :class="editorTab === 'share' ? 'bg-white text-night shadow' : 'text-dim-gray hover:text-white'"
+                  class="rounded-xl px-3 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] transition"
+                  :class="editorTab === 'share' ? 'bg-white text-night shadow' : 'text-dim-gray hover:bg-white/5 hover:text-white'"
                   @click="editorTab = 'share'"
                 >
                   Share
@@ -61,7 +66,7 @@
           </div>
 
           <div v-if="editorTab === 'base'" class="grid gap-4 xl:grid-cols-[0.82fr,1.18fr]">
-            <section class="rounded-2xl border border-white/10 bg-night/50 p-4 text-sm shadow-lg shadow-black/10">
+            <section class="rounded-[26px] border border-white/10 bg-white/[0.045] p-4 text-sm shadow-[0_18px_70px_rgba(0,0,0,0.22)] backdrop-blur">
               <div class="mb-4">
                 <p class="text-xs font-semibold uppercase tracking-[0.2em] text-dim-gray">Wurf</p>
                 <p class="mt-1 text-xs text-dim-gray">Anzahl und Seitenzahl des Wurfs.</p>
@@ -92,7 +97,7 @@
               </div>
             </section>
 
-            <section class="rounded-2xl border border-white/10 bg-night/50 p-4 text-sm shadow-lg shadow-black/10">
+            <section class="rounded-[26px] border border-white/10 bg-white/[0.045] p-4 text-sm shadow-[0_18px_70px_rgba(0,0,0,0.22)] backdrop-blur">
               <div class="grid gap-5 xl:grid-cols-[0.78fr,1.22fr]">
                 <div>
                   <div class="mb-4">
@@ -179,7 +184,7 @@
           </div>
 
           <div v-else-if="editorTab === 'style'" class="grid gap-4">
-            <section class="rounded-2xl border border-white/10 bg-night/50 p-4 text-sm shadow-lg shadow-black/10">
+            <section class="rounded-[26px] border border-white/10 bg-white/[0.045] p-4 text-sm shadow-[0_18px_70px_rgba(0,0,0,0.22)] backdrop-blur">
               <div class="mb-4">
                 <p class="text-xs font-semibold uppercase tracking-[0.2em] text-dim-gray">Look</p>
                 <p class="mt-1 text-xs text-dim-gray">Größe, Schrift und Anzeigeeinstellungen für deine Würfel.</p>
@@ -250,7 +255,7 @@
           </div>
 
           <div v-else-if="editorTab === 'colors'" class="grid gap-4">
-            <section class="flex min-h-[32rem] flex-col overflow-hidden rounded-2xl border border-white/10 bg-night/50 p-4 text-sm shadow-lg shadow-black/10">
+            <section class="flex min-h-[32rem] flex-col overflow-hidden rounded-[26px] border border-white/10 bg-white/[0.045] p-4 text-sm shadow-[0_18px_70px_rgba(0,0,0,0.22)] backdrop-blur">
               <div class="mb-3 shrink-0">
                 <p class="text-xs font-semibold uppercase tracking-[0.2em] text-dim-gray">Farben</p>
                 <p class="mt-1 text-xs text-dim-gray">Wechsle zwischen Presets und individuellen Würfelfarben.</p>
@@ -399,46 +404,50 @@
           </div>
 
           <div v-else class="grid gap-4">
-            <section class="rounded-2xl border border-white/10 bg-night/50 p-4 text-sm shadow-lg shadow-black/10">
+            <section class="rounded-[26px] border border-white/10 bg-white/[0.045] p-4 text-sm shadow-[0_18px_70px_rgba(0,0,0,0.22)] backdrop-blur">
               <div class="mb-4">
                 <p class="text-xs font-semibold uppercase tracking-[0.2em] text-dim-gray">Share</p>
-                <p class="mt-1 text-xs text-dim-gray">Erzeuge einen Link fuer OBS oder zum direkten Teilen.</p>
+                <p class="mt-1 text-xs text-dim-gray">Teile die aktuelle Konfiguration direkt oder kopiere einen separaten OBS-Link mit `obs=1`.</p>
               </div>
-              <div class="grid gap-2.5 sm:grid-cols-2">
-                <label class="flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-white/10 bg-eerie-black/40 px-3 py-2.5">
-                  <span>OBS-Ansicht</span>
-                  <input v-model="shareIncludeObs" type="checkbox" class="rounded border-gray-500" />
-                </label>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <button
+                  type="button"
+                  class="rounded-2xl border border-white/10 bg-black/15 px-4 py-4 text-left transition hover:border-moonstone/40 hover:bg-white/5"
+                  @click="shareConfigLink"
+                >
+                  <span class="block text-[11px] font-semibold uppercase tracking-[0.2em] text-dim-gray">Share</span>
+                  <span class="mt-2 block text-base font-semibold text-white">{{ shareActionLabel }}</span>
+                  <span class="mt-2 block truncate text-xs text-dim-gray">{{ shareConfigUrl }}</span>
+                </button>
+                <button
+                  type="button"
+                  class="rounded-2xl border border-moonstone/20 bg-moonstone/10 px-4 py-4 text-left transition hover:border-moonstone/45 hover:bg-moonstone/15"
+                  @click="copyObsLink"
+                >
+                  <span class="block text-[11px] font-semibold uppercase tracking-[0.2em] text-dim-gray">OBS</span>
+                  <span class="mt-2 block text-base font-semibold text-white">{{ obsCopyLabel }}</span>
+                  <span class="mt-2 block truncate text-xs text-dim-gray">{{ shareObsUrl }}</span>
+                </button>
+              </div>
+              <div class="mt-3 grid gap-2.5 sm:grid-cols-2">
                 <label class="flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-white/10 bg-eerie-black/40 px-3 py-2.5">
                   <span>Auto-Wurf</span>
                   <input v-model="shareIncludeAutoroll" type="checkbox" class="rounded border-gray-500" />
                 </label>
-              </div>
-              <div class="mt-4 flex gap-2">
-                <input
-                  :value="shareUrlDisplay"
-                  readonly
-                  class="min-w-0 flex-1 rounded-lg border border-gray-600 bg-eerie-black px-3 py-2 text-sm text-white"
-                  @focus="onShareInputFocus"
-                />
-                <button
-                  type="button"
-                  class="shrink-0 rounded-lg bg-twitch-purple px-4 py-2 text-sm font-semibold text-white hover:bg-violet-600"
-                  @click="copyShareLink"
-                >
-                  {{ shareCopied ? 'Kopiert' : 'Kopieren' }}
-                </button>
+                <div class="rounded-lg border border-white/10 bg-eerie-black/25 px-3 py-2.5 text-xs leading-5 text-dim-gray">
+                  `autoroll=1` wird beiden Share-Varianten hinzugefügt, wenn die Option aktiv ist.
+                </div>
               </div>
             </section>
           </div>
         </div>
 
         <div class="flex w-full flex-col gap-4 lg:sticky lg:top-4 lg:basis-[36%]">
-          <section class="rounded-2xl border border-white/10 bg-night/50 p-4 shadow-lg shadow-black/10">
+          <section class="rounded-[28px] border border-white/10 bg-white/[0.05] p-4 shadow-[0_24px_90px_rgba(0,0,0,0.3)] backdrop-blur xl:p-5">
             <div class="mb-4">
               <div>
                 <p class="text-xs font-semibold uppercase tracking-[0.2em] text-dim-gray">Preview</p>
-                <p class="mt-1 text-xs text-dim-gray">Live-Ansicht des aktuellen Wurfs und aller Styling-Optionen.</p>
+                <p class="mt-1 text-xs text-dim-gray">Live-Ansicht des aktuellen Wurfs, so wie er im Share-Link und im OBS-Modus erscheint.</p>
               </div>
             </div>
 
@@ -474,7 +483,7 @@
               <button
                 type="button"
                 :disabled="isRolling"
-                class="rounded-lg px-8 py-3 font-bold text-white shadow-lg transition enabled:bg-twitch-purple enabled:hover:bg-violet-600 enabled:active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+                class="rounded-xl px-8 py-3 font-bold text-white shadow-lg shadow-moonstone/20 transition enabled:bg-gradient-to-r enabled:from-moonstone enabled:to-twitch-purple enabled:hover:brightness-110 enabled:active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
                 @click="roll"
               >
                 {{ isRolling ? 'Würfelt …' : 'Würfeln' }}
@@ -482,7 +491,7 @@
             </div>
           </section>
 
-          <div class="rounded-xl border border-white/10 bg-night/40 px-4 py-3 text-center shadow-lg shadow-black/10">
+          <div class="rounded-[22px] border border-white/10 bg-white/[0.04] px-4 py-3 text-center shadow-[0_18px_70px_rgba(0,0,0,0.18)] backdrop-blur">
             <p class="min-h-[1.5rem] text-sm font-bold tracking-wide text-white sm:text-base">
               <span v-if="isRolling" class="text-moonstone">…</span>
               <span v-else class="tabular-nums">{{ results.join(' · ') }}</span>
@@ -887,10 +896,11 @@ function playDiceTick(soundSpeedMs = 70) {
   osc.stop(t + sustain + 0.008);
 }
 
-const shareIncludeObs = ref(false);
 const shareIncludeAutoroll = ref(false);
-const shareCopied = ref(false);
-let shareCopyResetId = 0;
+const shareActionState = ref<'idle' | 'copied' | 'shared'>('idle');
+const obsCopyState = ref<'idle' | 'copied'>('idle');
+let shareActionResetId = 0;
+let obsCopyResetId = 0;
 
 function clampDiceCount(n: number): number {
   return Math.max(1, Math.min(10, Math.floor(n)));
@@ -1374,34 +1384,81 @@ function applyQueryFromRoute() {
   }
 }
 
-function buildShareUrl(includeObs: boolean, includeAutoroll: boolean): string {
+function buildShareUrl(options?: { obs?: boolean; autoroll?: boolean }): string {
   if (import.meta.server) return '';
   const tool = buildToolQuery();
-  if (includeObs) tool.obs = '1';
-  if (includeAutoroll) tool.autoroll = '1';
+  if (options?.obs) tool.obs = '1';
+  if (options?.autoroll) tool.autoroll = '1';
   const qs = new URLSearchParams(tool).toString();
   const path = route.path || '/';
   return `${window.location.origin}${path}${qs ? `?${qs}` : ''}`;
 }
 
-const shareUrlDisplay = computed(() => buildShareUrl(shareIncludeObs.value, shareIncludeAutoroll.value));
+const shareConfigUrl = computed(() => buildShareUrl({ autoroll: shareIncludeAutoroll.value }));
+const shareObsUrl = computed(() => buildShareUrl({ obs: true, autoroll: shareIncludeAutoroll.value }));
+const shareActionLabel = computed(() => {
+  if (shareActionState.value === 'shared') return 'Geteilt';
+  if (shareActionState.value === 'copied') return 'Kopiert';
+  return 'Config teilen';
+});
+const obsCopyLabel = computed(() => (obsCopyState.value === 'copied' ? 'Kopiert' : 'OBS-Link kopieren'));
 
 function onShareInputFocus(e: Event) {
   const t = e.target as HTMLInputElement | null;
   t?.select();
 }
 
-async function copyShareLink() {
-  const url = buildShareUrl(shareIncludeObs.value, shareIncludeAutoroll.value);
+async function copyToClipboard(url: string) {
+  await navigator.clipboard?.writeText(url);
+}
+
+function resetShareStates() {
+  clearTimeout(shareActionResetId);
+  shareActionResetId = window.setTimeout(() => {
+    shareActionState.value = 'idle';
+  }, 2200);
+}
+
+function resetObsState() {
+  clearTimeout(obsCopyResetId);
+  obsCopyResetId = window.setTimeout(() => {
+    obsCopyState.value = 'idle';
+  }, 2200);
+}
+
+async function shareConfigLink() {
+  const url = shareConfigUrl.value;
   try {
-    await navigator.clipboard?.writeText(url);
-    shareCopied.value = true;
-    clearTimeout(shareCopyResetId);
-    shareCopyResetId = window.setTimeout(() => {
-      shareCopied.value = false;
-    }, 2000);
+    if (navigator.share) {
+      await navigator.share({
+        title: 'Dice Config',
+        text: 'Dice-Konfiguration teilen',
+        url,
+      });
+      shareActionState.value = 'shared';
+    } else {
+      await copyToClipboard(url);
+      shareActionState.value = 'copied';
+    }
+    resetShareStates();
   } catch {
-    shareCopied.value = false;
+    try {
+      await copyToClipboard(url);
+      shareActionState.value = 'copied';
+      resetShareStates();
+    } catch {
+      shareActionState.value = 'idle';
+    }
+  }
+}
+
+async function copyObsLink() {
+  try {
+    await copyToClipboard(shareObsUrl.value);
+    obsCopyState.value = 'copied';
+    resetObsState();
+  } catch {
+    obsCopyState.value = 'idle';
   }
 }
 
@@ -1459,7 +1516,8 @@ onUnmounted(() => {
   if (shuffleIntervalId) clearInterval(shuffleIntervalId);
   if (urlPushTimer) clearTimeout(urlPushTimer);
   clearTimeout(autorollTimeoutId);
-  clearTimeout(shareCopyResetId);
+  clearTimeout(shareActionResetId);
+  clearTimeout(obsCopyResetId);
   if (resizeObs) {
     resizeObs.disconnect();
     resizeObs = null;
